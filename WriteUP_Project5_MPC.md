@@ -15,4 +15,13 @@ States used for the model were - x coordinate of vehicle, y coordinate of vehicl
 
 ## Timestep Length and Elapsed Duration (N & dt)
 
-N value was fixed at 10 and dt value at 0.1. 
+N value was fixed at 10 and dt value at 0.1. Too large values of N made my vehicle to move erraticaly since my algorithm was trying to fit the far away points to reduce cost, and the closest point for which MPC actuator values are actually used was away from the fitted curve. Also too large N value makes the processing time larger and response slower, which created problems for my vehicle to take sharp turns. Too less value of N also made my vehicle to move erraticaly since model had no idea of the future state to give current actuator values.
+dt value was fixed at 0.1. dt is the value after which actuator inputs are given while predicting future states. Too large value of dt created problems since vehicle would steer off after some time. So I tried to keep dt as small as possible. But too small dt made vehicle to run not very smoothly. So I finally decided dt value equal to 0.1.
+
+## Polynomial Fitting 
+
+To fit the polynomial firstly I computed waypoints in vehicles frame of refrence. Then I used polyfit function to fit the third order polynomial to the points. Waypoints in vehicles frame of reference were required for plotting line in the simulator.
+
+## Model Predictive Control with Latency
+
+Latency of 0.1 seconds was added to the system. To take its effect vehicle position 0.1 seconds in future was predicted using state model equations. This is because our model will give actuations to the vehicle after 0.1 seconds, so our initial state should be after 0.1 seconds to get the correct optimum control values. Since we calculated waypoints from vehicles frame of reference, future point of vehicle was also calculated from vehicle frame of reference. 
